@@ -5,9 +5,13 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { PriceInput } from "@/components/admin/PriceInput";
 import { ProductImageUploader } from "@/components/admin/ProductImageUploader";
-import { useState } from "react";
+import { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 export default function AddProductPage() {
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
   const [category, setCategory] = useState("");
   const [sku, setSku] = useState("");
 
@@ -34,6 +38,21 @@ export default function AddProductPage() {
     }
   };
 
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    
+    startTransition(async () => {
+      const result = await createProduct(formData);
+      if (result?.success) {
+        toast.success(result.message || "Produk berhasil ditambahkan!");
+        router.push("/admin/produk");
+      } else {
+        toast.error(result?.error || "Terjadi kesalahan.");
+      }
+    });
+  };
+
   return (
     <div className="max-w-2xl mx-auto space-y-6">
       <div className="flex items-center gap-4">
@@ -47,7 +66,7 @@ export default function AddProductPage() {
       </div>
 
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-        <form action={createProduct} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700">Nama Produk *</label>
@@ -138,8 +157,8 @@ export default function AddProductPage() {
             <Link href="/admin/produk" className="px-6 py-2 text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-md font-medium transition-colors">
               Batal
             </Link>
-            <button type="submit" className="px-6 py-2 bg-pink-700 hover:bg-pink-800 text-white rounded-md font-medium transition-colors">
-              Simpan Produk
+            <button type="submit" disabled={isPending} className="px-6 py-2 bg-pink-700 hover:bg-pink-800 disabled:bg-pink-300 text-white rounded-md font-medium transition-colors flex items-center gap-2">
+              {isPending ? "Menyimpan..." : "Simpan Produk"}
             </button>
           </div>
         </form>

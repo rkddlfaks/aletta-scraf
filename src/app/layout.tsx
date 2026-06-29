@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Jost, Cormorant_Garamond, Geist_Mono } from "next/font/google";
+import { Toaster } from "react-hot-toast";
 import "./globals.css";
 
 const jost = Jost({
@@ -35,6 +36,7 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col font-sans bg-background text-foreground selection:bg-pink-200 selection:text-pink-900">
         {children}
+        <Toaster position="top-center" />
       </body>
     </html>
   );
