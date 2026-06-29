@@ -3,10 +3,16 @@ import { updateProduct } from "@/app/actions/product";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { notFound } from "next/navigation";
+import { PriceInput } from "@/components/admin/PriceInput";
+import { ProductImageUploader } from "@/components/admin/ProductImageUploader";
 
-export default async function EditProductPage({ params }: { params: { id: string } }) {
-  const id = parseInt(params.id, 10);
-  const product = await prisma.product.findUnique({ where: { id } });
+export default async function EditProductPage({ params }: { params: Promise<{ id: string }> }) {
+  const resolvedParams = await params;
+  const id = parseInt(resolvedParams.id, 10);
+  const product = await prisma.product.findUnique({ 
+    where: { id },
+    include: { images: true }
+  });
 
   if (!product) notFound();
 
@@ -48,8 +54,13 @@ export default async function EditProductPage({ params }: { params: { id: string
               </select>
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">Harga (Rp) *</label>
-              <input type="number" name="price" defaultValue={product.price} required min="0" className="w-full px-4 py-2 border border-gray-200 rounded-md focus:ring-2 focus:ring-pink-300 outline-none" />
+              <label className="text-sm font-medium text-gray-700">Harga Jual *</label>
+              <PriceInput name="price" defaultValue={product.price} />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-700">Harga Modal *</label>
+              <PriceInput name="cost" defaultValue={product.cost} />
+              <p className="text-[11px] text-gray-400 mt-1">*Hanya untuk Anda, digunakan sistem menghitung Laba Bersih.</p>
             </div>
 
             <div className="space-y-2">
@@ -59,6 +70,7 @@ export default async function EditProductPage({ params }: { params: { id: string
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700">Stok Minimum *</label>
               <input type="number" name="min_stock" defaultValue={product.min_stock} required min="0" className="w-full px-4 py-2 border border-gray-200 rounded-md focus:ring-2 focus:ring-pink-300 outline-none" />
+              <p className="text-[11px] text-gray-400 mt-1">*Jika stok menyentuh angka ini, produk akan masuk kategori "Stok Menipis".</p>
             </div>
 
             <div className="space-y-2">
@@ -71,8 +83,14 @@ export default async function EditProductPage({ params }: { params: { id: string
             </div>
 
             <div className="space-y-2 md:col-span-2">
-              <label className="text-sm font-medium text-gray-700">URL Gambar (Opsional)</label>
-              <input type="url" name="image_url" defaultValue={product.image_url || ""} placeholder="https://contoh.com/gambar.jpg" className="w-full px-4 py-2 border border-gray-200 rounded-md focus:ring-2 focus:ring-pink-300 outline-none" />
+              <label className="text-sm font-medium text-gray-700">Gambar Produk</label>
+              <ProductImageUploader initialUrls={product.images.length > 0 ? product.images.map(img => img.url) : (product.image_url ? [product.image_url] : [])} />
+            </div>
+
+            <div className="space-y-2 md:col-span-2">
+              <label className="text-sm font-medium text-gray-700">Deskripsi Detail Produk (Opsional)</label>
+              <textarea name="description" defaultValue={product.description || ""} rows={4} placeholder="Bahan ringan, tidak nerawang, ukuran 115x115cm..." className="w-full px-4 py-2 border border-gray-200 rounded-md focus:ring-2 focus:ring-pink-300 outline-none resize-y" />
+              <p className="text-[11px] text-gray-400 mt-1">*Digunakan untuk fitur Quick View di halaman depan.</p>
             </div>
 
             <div className="space-y-2 md:col-span-2">

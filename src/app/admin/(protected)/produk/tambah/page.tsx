@@ -1,8 +1,39 @@
+"use client";
+
 import { createProduct } from "@/app/actions/product";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
+import { PriceInput } from "@/components/admin/PriceInput";
+import { ProductImageUploader } from "@/components/admin/ProductImageUploader";
+import { useState } from "react";
 
 export default function AddProductPage() {
+  const [category, setCategory] = useState("");
+  const [sku, setSku] = useState("");
+
+  const generateSku = (selectedCategory: string) => {
+    let prefix = "PRD-";
+    switch (selectedCategory) {
+      case "Hijab Medis": prefix = "HJM-"; break;
+      case "Ciput": prefix = "CPT-"; break;
+      case "Mukena Premium": prefix = "MKP-"; break;
+      case "Ikat Rambut": prefix = "IKR-"; break;
+    }
+    // Generate 4 karakter acak (angka & huruf)
+    const randomSuffix = Math.random().toString(36).substring(2, 6).toUpperCase();
+    return prefix + randomSuffix;
+  };
+
+  const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const val = e.target.value;
+    setCategory(val);
+    if (val) {
+      setSku(generateSku(val));
+    } else {
+      setSku("");
+    }
+  };
+
   return (
     <div className="max-w-2xl mx-auto space-y-6">
       <div className="flex items-center gap-4">
@@ -22,14 +53,16 @@ export default function AddProductPage() {
               <label className="text-sm font-medium text-gray-700">Nama Produk *</label>
               <input type="text" name="name" required className="w-full px-4 py-2 border border-gray-200 rounded-md focus:ring-2 focus:ring-pink-300 outline-none" />
             </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">SKU *</label>
-              <input type="text" name="sku" required className="w-full px-4 py-2 border border-gray-200 rounded-md focus:ring-2 focus:ring-pink-300 outline-none" />
-            </div>
-            
+
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700">Kategori *</label>
-              <select name="category" required className="w-full px-4 py-2 border border-gray-200 rounded-md focus:ring-2 focus:ring-pink-300 outline-none bg-white">
+              <select 
+                name="category" 
+                required 
+                value={category}
+                onChange={handleCategoryChange}
+                className="w-full px-4 py-2 border border-gray-200 rounded-md focus:ring-2 focus:ring-pink-300 outline-none bg-white"
+              >
                 <option value="">Pilih Kategori</option>
                 <option value="Hijab Medis">Hijab Medis</option>
                 <option value="Ciput">Ciput</option>
@@ -37,9 +70,30 @@ export default function AddProductPage() {
                 <option value="Ikat Rambut">Ikat Rambut</option>
               </select>
             </div>
+
             <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">Harga (Rp) *</label>
-              <input type="number" name="price" required min="0" className="w-full px-4 py-2 border border-gray-200 rounded-md focus:ring-2 focus:ring-pink-300 outline-none" />
+              <label className="text-sm font-medium text-gray-700 flex justify-between">
+                SKU *
+                <span className="text-xs text-pink-600 font-normal bg-pink-50 px-2 py-0.5 rounded">Otomatis dari Kategori</span>
+              </label>
+              <input 
+                type="text" 
+                name="sku" 
+                required 
+                value={sku}
+                onChange={(e) => setSku(e.target.value)}
+                placeholder="Contoh: HJM-A1B2"
+                className="w-full px-4 py-2 border border-gray-200 rounded-md focus:ring-2 focus:ring-pink-300 outline-none uppercase" 
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-700">Harga Jual *</label>
+              <PriceInput name="price" />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-700">Harga Modal *</label>
+              <PriceInput name="cost" />
+              <p className="text-[11px] text-gray-400 mt-1">*Hanya untuk Anda, digunakan sistem menghitung Laba Bersih.</p>
             </div>
 
             <div className="space-y-2">
@@ -49,6 +103,7 @@ export default function AddProductPage() {
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700">Stok Minimum *</label>
               <input type="number" name="min_stock" required min="0" defaultValue="5" className="w-full px-4 py-2 border border-gray-200 rounded-md focus:ring-2 focus:ring-pink-300 outline-none" />
+              <p className="text-[11px] text-gray-400 mt-1">*Jika stok menyentuh angka ini, produk akan masuk kategori "Stok Menipis".</p>
             </div>
 
             <div className="space-y-2">
@@ -61,8 +116,14 @@ export default function AddProductPage() {
             </div>
 
             <div className="space-y-2 md:col-span-2">
-              <label className="text-sm font-medium text-gray-700">URL Gambar (Opsional)</label>
-              <input type="url" name="image_url" placeholder="https://contoh.com/gambar.jpg" className="w-full px-4 py-2 border border-gray-200 rounded-md focus:ring-2 focus:ring-pink-300 outline-none" />
+              <label className="text-sm font-medium text-gray-700">Gambar Produk</label>
+              <ProductImageUploader />
+            </div>
+            
+            <div className="space-y-2 md:col-span-2">
+              <label className="text-sm font-medium text-gray-700">Deskripsi Detail Produk (Opsional)</label>
+              <textarea name="description" rows={4} placeholder="Bahan ringan, tidak nerawang, ukuran 115x115cm..." className="w-full px-4 py-2 border border-gray-200 rounded-md focus:ring-2 focus:ring-pink-300 outline-none resize-y" />
+              <p className="text-[11px] text-gray-400 mt-1">*Digunakan untuk fitur Quick View di halaman depan.</p>
             </div>
 
             <div className="space-y-2 md:col-span-2">

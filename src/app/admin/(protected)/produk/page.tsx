@@ -1,28 +1,78 @@
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
-import { Plus, Edit, Trash2 } from "lucide-react";
+import { Plus, Edit } from "lucide-react";
 import { DeleteProductButton } from "@/components/admin/DeleteProductButton";
 import { deleteProduct } from "@/app/actions/product";
+import { ProductFilters } from "@/components/admin/ProductFilters";
+import { Prisma } from "@prisma/client";
+import { Suspense } from "react";
 
-export default async function ProductListPage() {
-  const products = await prisma.product.findMany({
+export default async function ProductListPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string; category?: string; status?: string; stock?: string }>;
+}) {
+  const resolvedParams = await searchParams;
+  const q = resolvedParams.q || "";
+  const category = resolvedParams.category || "";
+  const status = resolvedParams.status || "";
+  const stock = resolvedParams.stock || "";
+
+  const where: Prisma.ProductWhereInput = {};
+
+  if (q) {
+    where.OR = [
+      { name: { contains: q } },
+      { sku: { contains: q } },
+    ];
+  }
+
+  if (category) {
+    where.category = category;
+  }
+
+  if (status === "active") {
+    where.is_active = true;
+  } else if (status === "inactive") {
+    where.is_active = false;
+  }
+
+  // Note: Filtering by stock vs min_stock is harder in Prisma without raw queries,
+  // but we can fetch all filtered by other conditions, then filter in memory if stock param exists,
+  // OR use Prisma field references if it's a modern Prisma version: `where.current_stock = { lte: prisma.product.fields.min_stock }`
+  // Actually, standard Prisma doesn't support comparing two columns in `where` easily unless using raw queries.
+  // We'll fetch all and filter in JS if stock is used, since product catalog is usually small.
+  // Wait, let's just do it in JS for `stock` parameter to be safe.
+
+  const rawProducts = await prisma.product.findMany({
+    where,
     orderBy: { created_at: "desc" }
   });
 
+  const products = stock === "low" 
+    ? rawProducts.filter(p => p.current_stock <= p.min_stock)
+    : stock === "safe"
+    ? rawProducts.filter(p => p.current_stock > p.min_stock)
+    : rawProducts;
+
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
         <div>
           <h1 className="text-3xl font-serif font-bold text-gray-900">Manajemen Produk</h1>
           <p className="text-muted-foreground mt-1">Kelola data katalog dan stok.</p>
         </div>
         <Link 
           href="/admin/produk/tambah" 
-          className="bg-pink-700 hover:bg-pink-800 text-white px-4 py-2 rounded-md font-medium flex items-center gap-2 transition-colors"
+          className="bg-pink-700 hover:bg-pink-800 text-white px-4 py-2 rounded-md font-medium flex items-center gap-2 transition-colors whitespace-nowrap"
         >
           <Plus size={20} /> Tambah Produk
         </Link>
       </div>
+
+      <Suspense fallback={<div className="h-16 bg-gray-100 rounded-xl mb-6 animate-pulse"></div>}>
+        <ProductFilters />
+      </Suspense>
 
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
         <div className="overflow-x-auto">
@@ -81,7 +131,7 @@ export default async function ProductListPage() {
                       >
                         <Edit size={18} />
                       </Link>
-                      <DeleteProductButton id={p.id} onDelete={deleteProduct} />
+                      <DeleteProductButton id={p.id} productName={p.name} onDelete={deleteProduct} />
                     </div>
                   </td>
                 </tr>

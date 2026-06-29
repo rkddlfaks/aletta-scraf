@@ -9,18 +9,28 @@ export interface CartItem {
 
 interface CartStore {
   items: CartItem[];
+  isCartOpen: boolean;
   addItem: (product: Product, quantity?: number) => void;
   removeItem: (productId: number) => void;
+  removeItems: (productIds: number[]) => void;
   updateQuantity: (productId: number, quantity: number) => void;
   clearCart: () => void;
   getTotalItems: () => number;
   getTotalPrice: () => number;
+  openCart: () => void;
+  closeCart: () => void;
+  toggleCart: () => void;
 }
 
 export const useCartStore = create<CartStore>()(
   persist(
     (set, get) => ({
       items: [],
+      isCartOpen: false,
+      
+      openCart: () => set({ isCartOpen: true }),
+      closeCart: () => set({ isCartOpen: false }),
+      toggleCart: () => set((state) => ({ isCartOpen: !state.isCartOpen })),
       
       addItem: (product, quantity = 1) => {
         set((state) => {
@@ -43,6 +53,12 @@ export const useCartStore = create<CartStore>()(
       removeItem: (productId) => {
         set((state) => ({
           items: state.items.filter((item) => item.product.id !== productId),
+        }));
+      },
+      
+      removeItems: (productIds) => {
+        set((state) => ({
+          items: state.items.filter((item) => !productIds.includes(item.product.id)),
         }));
       },
       

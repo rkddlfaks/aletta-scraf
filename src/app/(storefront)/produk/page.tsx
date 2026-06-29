@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { ProductCard } from "@/components/storefront/ProductCard";
+import { ProductFilter } from "@/components/storefront/ProductFilter";
 import Link from "next/link";
-import { Filter } from "lucide-react";
 
 export default async function CatalogPage({
   searchParams,
@@ -11,8 +11,10 @@ export default async function CatalogPage({
   const category = searchParams.category || "Semua";
   const sort = searchParams.sort || "newest";
 
-  // Build query
-  const where = { is_active: true, ...(category !== "Semua" && { category }) };
+  // Build query: Exclude Mukena Premium from this page
+  const baseWhere = { is_active: true, category: { not: "Mukena Premium" } };
+  const where = category !== "Semua" ? { ...baseWhere, category } : baseWhere;
+
   let orderBy: any = { created_at: "desc" };
 
   if (sort === "price-asc") orderBy = { price: "asc" };
@@ -22,12 +24,13 @@ export default async function CatalogPage({
   const products = await prisma.product.findMany({
     where,
     orderBy,
+    include: { images: true }
   });
 
-  const categories = ["Semua", "Hijab Medis", "Ciput", "Mukena Premium", "Ikat Rambut"];
+  const categories = ["Semua", "Hijab Medis", "Ciput", "Ikat Rambut"];
 
   return (
-    <div className="bg-gray-50 min-h-screen py-12">
+    <div className="bg-gray-50 min-h-screen pt-40 pb-12">
       <div className="container mx-auto px-4">
         <div className="mb-8">
           <h1 className="text-3xl md:text-4xl font-serif font-bold text-gray-900 mb-4">Koleksi Aletta Scarf</h1>
@@ -38,48 +41,12 @@ export default async function CatalogPage({
 
         <div className="flex flex-col md:flex-row gap-8">
           {/* Sidebar Filters */}
-          <aside className="w-full md:w-64 shrink-0">
-            <div className="bg-white p-5 rounded-xl border border-gray-200 shadow-sm sticky top-24">
-              <div className="flex items-center gap-2 font-semibold text-gray-900 mb-4 pb-4 border-b border-gray-100">
-                <Filter size={18} /> Filter
-              </div>
-              
-              <div className="space-y-6">
-                <div>
-                  <h3 className="text-sm font-medium text-gray-900 mb-3">Kategori</h3>
-                  <div className="space-y-2">
-                    {categories.map(cat => (
-                      <Link 
-                        key={cat} 
-                        href={`/produk?category=${cat}&sort=${sort}`}
-                        className={`block text-sm py-1 transition-colors ${category === cat ? 'text-pink-700 font-medium' : 'text-gray-600 hover:text-pink-600'}`}
-                      >
-                        {cat}
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-
-                <div>
-                  <h3 className="text-sm font-medium text-gray-900 mb-3">Urutkan</h3>
-                  <div className="space-y-2">
-                    <Link href={`/produk?category=${category}&sort=newest`} className={`block text-sm py-1 transition-colors ${sort === 'newest' ? 'text-pink-700 font-medium' : 'text-gray-600 hover:text-pink-600'}`}>
-                      Terbaru
-                    </Link>
-                    <Link href={`/produk?category=${category}&sort=bestseller`} className={`block text-sm py-1 transition-colors ${sort === 'bestseller' ? 'text-pink-700 font-medium' : 'text-gray-600 hover:text-pink-600'}`}>
-                      Terlaris
-                    </Link>
-                    <Link href={`/produk?category=${category}&sort=price-asc`} className={`block text-sm py-1 transition-colors ${sort === 'price-asc' ? 'text-pink-700 font-medium' : 'text-gray-600 hover:text-pink-600'}`}>
-                      Harga: Rendah ke Tinggi
-                    </Link>
-                    <Link href={`/produk?category=${category}&sort=price-desc`} className={`block text-sm py-1 transition-colors ${sort === 'price-desc' ? 'text-pink-700 font-medium' : 'text-gray-600 hover:text-pink-600'}`}>
-                      Harga: Tinggi ke Rendah
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </aside>
+          {/* Sidebar Filters */}
+          <ProductFilter 
+            currentCategory={category} 
+            currentSort={sort} 
+            categories={categories} 
+          />
 
           {/* Product Grid */}
           <div className="flex-1">
@@ -91,7 +58,7 @@ export default async function CatalogPage({
                 </Link>
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6">
                 {products.map(product => (
                   <ProductCard key={product.id} product={product} />
                 ))}

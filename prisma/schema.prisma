@@ -6,7 +6,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -18,6 +18,14 @@ model User {
   created_at    DateTime @default(now())
 }
 
+model StoreSetting {
+  id              Int      @id @default(autoincrement())
+  promo_text      String?  @default("🔥 PROMO SPESIAL: Beli 3 Scarf Medis Gratis Ongkir! Promo Berakhir Hari Ini.")
+  is_promo_active Boolean  @default(true)
+  whatsapp_number String   @default("6281234567890")
+  updated_at      DateTime @updatedAt
+}
+
 model Product {
   id            Int      @id @default(autoincrement())
   name          String
@@ -25,12 +33,79 @@ model Product {
   category      String
   unit          String   @default("pcs")
   price         Int
+  cost          Int      @default(0)
   current_stock Int      @default(0)
   min_stock     Int      @default(5)
   badge         String?
   image_url     String?
+  description   String?  // Untuk detail di Quick View
   sold_count    Int      @default(0)
   is_active     Boolean  @default(true)
   created_at    DateTime @default(now())
   updated_at    DateTime @updatedAt
+
+  orderItems    OrderItem[]
+  images        ProductImage[]
+}
+
+model Order {
+  id               Int      @id @default(autoincrement())
+  order_number     String   @unique // e.g. INV-20231015-001
+  
+  // Guest Checkout Details
+  customer_name    String
+  customer_email   String?
+  customer_phone   String
+  shipping_address String
+  city             String
+  postal_code      String
+
+  // Order Info
+  total_amount     Int
+  status           String   @default("PENDING") // PENDING, PAID, PROCESSING, SHIPPED, COMPLETED, CANCELLED
+  payment_method   String?  // e.g. BANK_TRANSFER, GOPAY, MANUAL
+  payment_proof    String?  // URL to uploaded receipt (if manual)
+  shipping_provider String? // e.g. JNE, J&T, Sicepat
+  tracking_number   String? // e.g. 10002939281
+
+  created_at       DateTime @default(now())
+  updated_at       DateTime @updatedAt
+
+  items            OrderItem[]
+  testimonial      Testimonial?
+}
+
+model Testimonial {
+  id            Int      @id @default(autoincrement())
+  order_id      Int      @unique
+  order         Order    @relation(fields: [order_id], references: [id], onDelete: Cascade)
+  customer_name String
+  role          String?
+  rating        Int      @default(5)
+  content       String   // Text field equivalent
+  is_approved   Boolean  @default(false)
+  created_at    DateTime @default(now())
+}
+
+model OrderItem {
+  id         Int      @id @default(autoincrement())
+  order_id   Int
+  product_id Int
+  
+  quantity   Int
+  price      Int      // Snapshot of price at the time of purchase
+  cost       Int      @default(0) // Snapshot of cost at the time of purchase
+
+  order      Order    @relation(fields: [order_id], references: [id], onDelete: Cascade)
+  product    Product  @relation(fields: [product_id], references: [id], onDelete: Restrict)
+}
+
+model ProductImage {
+  id         Int      @id @default(autoincrement())
+  product_id Int
+  url        String
+  is_primary Boolean  @default(false)
+  created_at DateTime @default(now())
+
+  product    Product  @relation(fields: [product_id], references: [id], onDelete: Cascade)
 }
