@@ -280,7 +280,7 @@ export function ProductCard({ product, theme = "light" }: { product: ProductWith
             <button
               onClick={handleAddToCart}
               disabled={isOutOfStock}
-              className={`flex-none w-8 md:w-auto md:flex-1 py-1.5 md:py-2.5 rounded-md md:rounded-lg flex items-center justify-center gap-2 text-xs md:text-sm font-bold transition-all ${
+              className={`flex-none w-8 md:w-10 py-1.5 md:py-2.5 rounded-md md:rounded-lg flex items-center justify-center gap-2 text-xs md:text-sm font-bold transition-all ${
                 added 
                   ? (isDark ? "bg-amber-600 text-white" : "bg-green-500 text-white")
                   : isOutOfStock 
