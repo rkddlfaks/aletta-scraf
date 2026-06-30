@@ -189,7 +189,7 @@ export function ProductCard({ product, theme = "light" }: { product: ProductWith
                       Rp {product.price.toLocaleString("id-ID")}
                     </div>
 
-                    <div className={`prose prose-sm max-w-none mb-8 flex-1 overflow-y-auto pr-2 dark:prose-invert`}>
+                    <div className={`prose prose-sm max-w-none mb-8 flex-1 min-h-0 overflow-y-auto pr-2 dark:prose-invert`}>
                       <h4 className="font-semibold mb-2 text-gray-900 dark:text-white">Detail Produk:</h4>
                       {product.description ? (
                         <p className="whitespace-pre-line text-sm leading-relaxed opacity-80 text-gray-700 dark:text-gray-300">
