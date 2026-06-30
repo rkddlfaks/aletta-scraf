@@ -177,7 +177,7 @@ export function ProductCard({ product, theme = "light" }: { product: ProductWith
                   )}
                 </div>
 
-                <div className="w-full md:w-1/2 flex flex-col h-auto md:h-full max-h-full overflow-hidden">
+                <div className="w-full md:w-1/2 flex flex-col h-auto md:h-full md:max-h-full md:overflow-hidden">
                   <div className="p-6 md:p-8 flex flex-col flex-1 min-h-0">
                     <div className={`text-sm mb-2 font-semibold text-pink-600 dark:text-amber-500`}>
                       {product.category}
