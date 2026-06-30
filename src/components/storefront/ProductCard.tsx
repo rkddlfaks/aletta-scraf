@@ -126,13 +126,13 @@ export function ProductCard({ product, theme = "light" }: { product: ProductWith
                 </button>
 
                 <div className={`w-full md:w-1/2 flex flex-col shrink-0 bg-gray-100 dark:bg-zinc-800`}>
-                  <div className="w-full aspect-square relative group">
+                  <div className="w-full flex-1 relative group min-h-[300px] md:min-h-[400px]">
                     {currentImage ? (
                       <>
                         <img
                           src={currentImage}
                           alt={product.name}
-                          className="w-full h-full object-contain"
+                          className="absolute inset-0 w-full h-full object-contain p-4 md:p-8"
                         />
                         {galleryImages.length > 1 && (
                           <>
