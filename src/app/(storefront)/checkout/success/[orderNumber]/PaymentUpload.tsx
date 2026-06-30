@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { UploadCloud, CheckCircle2, Loader2 } from "lucide-react";
+import { compressImageToWebp } from "@/lib/imageCompression";
 
 export function PaymentUpload({ orderNumber, currentProof }: { orderNumber: string, currentProof: string | null }) {
   const [file, setFile] = useState<File | null>(null);
@@ -18,11 +19,13 @@ export function PaymentUpload({ orderNumber, currentProof }: { orderNumber: stri
     if (!file) return;
 
     setIsUploading(true);
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("orderNumber", orderNumber);
-
+    
     try {
+      const compressedFile = await compressImageToWebp(file);
+      
+      const formData = new FormData();
+      formData.append("file", compressedFile);
+      formData.append("orderNumber", orderNumber);
       const res = await fetch("/api/upload-proof", {
         method: "POST",
         body: formData,

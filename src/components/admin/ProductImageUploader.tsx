@@ -4,6 +4,8 @@ import { useState, useCallback } from "react";
 import { UploadCloud, X, Loader2, Image as ImageIcon } from "lucide-react";
 import Image from "next/image";
 
+import { compressImageToWebp } from "@/lib/imageCompression";
+
 interface ProductImageUploaderProps {
   initialUrls?: string[];
 }
@@ -17,12 +19,16 @@ export function ProductImageUploader({ initialUrls = [] }: ProductImageUploaderP
     if (!files || files.length === 0) return;
 
     setIsUploading(true);
-    const formData = new FormData();
-    for (let i = 0; i < files.length; i++) {
-      formData.append("files", files[i]);
-    }
-
+    
     try {
+      const formData = new FormData();
+      
+      // Compress each file to WebP
+      for (let i = 0; i < files.length; i++) {
+        const compressedFile = await compressImageToWebp(files[i]);
+        formData.append("files", compressedFile);
+      }
+
       const res = await fetch("/api/upload-product", {
         method: "POST",
         body: formData,
@@ -35,7 +41,8 @@ export function ProductImageUploader({ initialUrls = [] }: ProductImageUploaderP
         alert(data.error || "Gagal mengunggah gambar.");
       }
     } catch (error) {
-      alert("Terjadi kesalahan jaringan.");
+      console.error("Upload error:", error);
+      alert("Terjadi kesalahan saat mengompres atau mengunggah gambar.");
     } finally {
       setIsUploading(false);
     }
