@@ -64,7 +64,7 @@ export function ProductCard({ product, theme = "light" }: { product: ProductWith
           <img 
             src={product.image_url} 
             alt={product.name} 
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+            className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
           />
         ) : (
           <div className={`w-full h-full flex flex-col items-center justify-center ${
@@ -132,7 +132,7 @@ export function ProductCard({ product, theme = "light" }: { product: ProductWith
                         <img
                           src={currentImage}
                           alt={product.name}
-                          className="w-full h-full object-cover"
+                          className="w-full h-full object-contain"
                         />
                         {galleryImages.length > 1 && (
                           <>
@@ -170,7 +170,7 @@ export function ProductCard({ product, theme = "light" }: { product: ProductWith
                             currentImageIndex === idx ? "border-pink-600 dark:border-amber-500" : "border-transparent opacity-60 hover:opacity-100"
                           }`}
                         >
-                          <img src={img} alt="Thumbnail" className="w-full h-full object-cover" />
+                          <img src={img} alt="Thumbnail" className="w-full h-full object-contain" />
                         </button>
                       ))}
                     </div>
