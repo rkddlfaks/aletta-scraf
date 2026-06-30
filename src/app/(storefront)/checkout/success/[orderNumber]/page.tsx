@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import { PaymentUpload } from "./PaymentUpload";
+import { getWhatsAppNumber } from "@/app/actions/settings";
 
 export default async function CheckoutSuccessPage({ params }: { params: Promise<{ orderNumber: string }> }) {
   const resolvedParams = await params;
@@ -15,6 +16,8 @@ export default async function CheckoutSuccessPage({ params }: { params: Promise<
     notFound();
   }
 
+  const waNumber = await getWhatsAppNumber();
+
   // Generate WhatsApp text
   let message = `Halo Aletta Scarf, saya sudah melakukan pesanan dan ingin konfirmasi.\n\n`;
   message += `*Nomor Pesanan:* ${order.order_number}\n`;
@@ -22,7 +25,6 @@ export default async function CheckoutSuccessPage({ params }: { params: Promise<
   message += `*Total Transfer:* Rp ${order.total_amount.toLocaleString("id-ID")}\n\n`;
   message += "Tolong dicek ya kak. Terima kasih!";
   
-  const waNumber = "6281234567890"; // Using default if setting is not fetched for simplicity
   const waUrl = `https://wa.me/${waNumber}?text=${encodeURIComponent(message)}`;
 
   return (

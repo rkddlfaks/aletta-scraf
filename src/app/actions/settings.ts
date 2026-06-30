@@ -22,11 +22,19 @@ export async function updateStoreSettings(formData: FormData) {
       });
     }
 
-    revalidatePath("/");
-    revalidatePath("/admin/pengaturan");
+    revalidatePath("/", "layout");
     return { success: true };
   } catch (error) {
     console.error("Failed to update store settings:", error);
     return { success: false, error: "Gagal menyimpan pengaturan" };
+  }
+}
+
+export async function getWhatsAppNumber() {
+  try {
+    const setting = await prisma.storeSetting.findFirst();
+    return setting?.whatsapp_number || "6281234567890";
+  } catch (error) {
+    return "6281234567890";
   }
 }

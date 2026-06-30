@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { createOrder } from "@/app/actions/checkout";
+import { getWhatsAppNumber } from "@/app/actions/settings";
 import { useCartStore } from "@/store/useCartStore";
 import { X, Loader2, Truck, CheckCircle2 } from "lucide-react";
 
@@ -14,6 +15,13 @@ export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
   const { items, getTotalPrice, clearCart } = useCartStore();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [adminWaNumber, setAdminWaNumber] = useState("6281234567890");
+
+  useEffect(() => {
+    if (isOpen) {
+      getWhatsAppNumber().then(setAdminWaNumber);
+    }
+  }, [isOpen]);
 
   const [formData, setFormData] = useState({
     customer_name: "",
@@ -44,8 +52,7 @@ export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
     message += `*Alamat Pengiriman:*\n${formData.shipping_address}\n${formData.city}, ${formData.postal_code}\n\n`;
     message += "Mohon info ketersediaan dan ongkos kirim. Terima kasih!";
 
-    const waNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "6281234567890";
-    return `https://wa.me/${waNumber}?text=${encodeURIComponent(message)}`;
+    return `https://wa.me/${adminWaNumber}?text=${encodeURIComponent(message)}`;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
