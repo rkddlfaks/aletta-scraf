@@ -116,16 +116,16 @@ export function ProductCard({ product, theme = "light" }: { product: ProductWith
                     initial={{ opacity: 0, scale: 0.95, y: 20 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                    className={`relative w-full max-w-4xl rounded-2xl shadow-2xl flex flex-col md:flex-row max-h-[90vh] md:max-h-[85vh] overflow-y-auto md:overflow-hidden bg-white dark:bg-zinc-900`}
+                    className={`relative w-full max-w-4xl rounded-2xl shadow-2xl flex flex-col md:flex-row max-h-[90vh] md:max-h-[85vh] overflow-y-auto md:overflow-hidden ${isDark ? "bg-zinc-900" : "bg-white"}`}
                   >
                     <button
                       onClick={() => setIsQuickViewOpen(false)}
-                      className={`absolute top-4 right-4 z-10 p-2 rounded-full bg-white/80 dark:bg-zinc-800/80 text-gray-500 dark:text-zinc-400 hover:text-gray-900 dark:hover:text-white shadow-sm backdrop-blur-md`}
+                      className={`absolute top-4 right-4 z-10 p-2 rounded-full shadow-sm backdrop-blur-md ${isDark ? "bg-zinc-800/80 text-zinc-400 hover:text-white" : "bg-white/80 text-gray-500 hover:text-gray-900"}`}
                     >
                       <X size={20} />
                     </button>
 
-                    <div className={`w-full md:w-1/2 flex flex-col shrink-0 bg-gray-100 dark:bg-zinc-800`}>
+                    <div className={`w-full md:w-1/2 flex flex-col shrink-0 ${isDark ? "bg-zinc-800" : "bg-gray-100"}`}>
                       <div className="w-full flex-1 relative group min-h-[350px] md:min-h-[500px]">
                     {currentImage ? (
                       <>
@@ -156,18 +156,18 @@ export function ProductCard({ product, theme = "light" }: { product: ProductWith
                       </>
                     ) : (
                       <div className="w-full h-full flex items-center justify-center opacity-30">
-                        <span className="font-serif text-3xl font-bold dark:text-white">ALETTA</span>
+                        <span className={`font-serif text-3xl font-bold ${isDark ? "text-white" : "text-gray-900"}`}>ALETTA</span>
                       </div>
                     )}
                   </div>
                   {galleryImages.length > 1 && (
-                    <div className="flex gap-2 p-4 overflow-x-auto [&::-webkit-scrollbar]:hidden bg-black/5 dark:bg-white/5">
+                    <div className={`flex gap-2 p-4 overflow-x-auto [&::-webkit-scrollbar]:hidden ${isDark ? "bg-white/5" : "bg-black/5"}`}>
                       {galleryImages.map((img, idx) => (
                         <button 
                           key={idx}
                           onClick={() => setCurrentImageIndex(idx)}
                           className={`w-16 h-16 shrink-0 rounded-lg overflow-hidden border-2 transition-all ${
-                            currentImageIndex === idx ? "border-pink-600 dark:border-amber-500" : "border-transparent opacity-60 hover:opacity-100"
+                            currentImageIndex === idx ? (isDark ? "border-amber-500" : "border-pink-600") : "border-transparent opacity-60 hover:opacity-100"
                           }`}
                         >
                           <img src={img} alt="Thumbnail" className="w-full h-full object-contain" />
@@ -179,28 +179,28 @@ export function ProductCard({ product, theme = "light" }: { product: ProductWith
 
                 <div className="w-full md:w-1/2 flex flex-col h-auto md:h-full md:max-h-[85vh] md:overflow-hidden">
                   <div className="p-6 md:p-8 flex flex-col flex-1 min-h-0">
-                    <div className={`text-sm mb-2 font-semibold text-pink-600 dark:text-amber-500`}>
+                    <div className={`text-sm mb-2 font-semibold ${isDark ? "text-amber-500" : "text-pink-600"}`}>
                       {product.category}
                     </div>
-                    <h2 className={`text-2xl font-bold mb-4 leading-tight text-gray-900 dark:text-white`}>
+                    <h2 className={`text-2xl font-bold mb-4 leading-tight ${isDark ? "text-white" : "text-gray-900"}`}>
                       {product.name}
                     </h2>
-                    <div className={`text-2xl font-black mb-6 text-pink-700 dark:text-amber-500`}>
+                    <div className={`text-2xl font-black mb-6 ${isDark ? "text-amber-500" : "text-pink-700"}`}>
                       Rp {product.price.toLocaleString("id-ID")}
                     </div>
 
-                    <div className={`prose prose-sm max-w-none mb-8 flex-1 min-h-0 overflow-y-auto pr-2 dark:prose-invert`}>
-                      <h4 className="font-semibold mb-2 text-gray-900 dark:text-white">Detail Produk:</h4>
+                    <div className={`prose prose-sm max-w-none mb-8 flex-1 min-h-0 overflow-y-auto pr-2 ${isDark ? "prose-invert" : ""}`}>
+                      <h4 className={`font-semibold mb-2 ${isDark ? "text-white" : "text-gray-900"}`}>Detail Produk:</h4>
                       {product.description ? (
-                        <p className="whitespace-pre-line text-sm leading-relaxed opacity-80 text-gray-700 dark:text-gray-300">
+                        <p className={`whitespace-pre-line text-sm leading-relaxed opacity-80 ${isDark ? "text-gray-300" : "text-gray-700"}`}>
                           {product.description}
                         </p>
                       ) : (
-                        <p className="text-sm italic opacity-60 text-gray-700 dark:text-gray-300">Deskripsi belum tersedia.</p>
+                        <p className={`text-sm italic opacity-60 ${isDark ? "text-gray-300" : "text-gray-700"}`}>Deskripsi belum tersedia.</p>
                       )}
                     </div>
 
-                    <div className="mt-auto shrink-0 pt-6 border-t border-gray-200 dark:border-zinc-800">
+                    <div className={`mt-auto shrink-0 pt-6 border-t ${isDark ? "border-zinc-800" : "border-gray-200"}`}>
                       <div className="flex gap-3">
                         <button
                           onClick={(e) => {
@@ -210,8 +210,8 @@ export function ProductCard({ product, theme = "light" }: { product: ProductWith
                           disabled={isOutOfStock}
                           className={`w-14 shrink-0 py-3.5 rounded-xl flex items-center justify-center gap-2 font-bold transition-all ${
                             isOutOfStock 
-                              ? "bg-gray-100 text-gray-400 dark:bg-zinc-800 dark:text-zinc-500 cursor-not-allowed" 
-                              : "bg-pink-50 text-pink-700 hover:bg-pink-100 dark:bg-zinc-800 dark:text-amber-500 dark:hover:bg-zinc-700"
+                              ? (isDark ? "bg-zinc-800 text-zinc-500 cursor-not-allowed" : "bg-gray-100 text-gray-400 cursor-not-allowed")
+                              : (isDark ? "bg-zinc-800 text-amber-500 hover:bg-zinc-700" : "bg-pink-50 text-pink-700 hover:bg-pink-100")
                           }`}
                         >
                           <ShoppingBag size={20} />
@@ -225,8 +225,8 @@ export function ProductCard({ product, theme = "light" }: { product: ProductWith
                           disabled={isOutOfStock}
                           className={`flex-[2] py-3.5 rounded-xl flex items-center justify-center font-bold transition-all ${
                             isOutOfStock 
-                              ? "bg-gray-200 text-gray-400 dark:bg-zinc-900 dark:text-zinc-600 dark:border dark:border-zinc-800 cursor-not-allowed"
-                              : "bg-pink-950 hover:bg-pink-800 text-white shadow-lg shadow-pink-900/20 dark:bg-amber-500 dark:hover:bg-amber-400 dark:text-zinc-950"
+                              ? (isDark ? "bg-zinc-900 text-zinc-600 border border-zinc-800 cursor-not-allowed" : "bg-gray-200 text-gray-400 cursor-not-allowed")
+                              : (isDark ? "bg-amber-500 hover:bg-amber-400 text-zinc-950" : "bg-pink-950 hover:bg-pink-800 text-white shadow-lg shadow-pink-900/20")
                           }`}
                         >
                           Beli Langsung
