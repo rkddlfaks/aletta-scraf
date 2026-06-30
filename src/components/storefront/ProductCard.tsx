@@ -132,7 +132,7 @@ export function ProductCard({ product, theme = "light" }: { product: ProductWith
                         <img
                           src={currentImage}
                           alt={product.name}
-                          className="absolute inset-0 w-full h-full object-contain p-4 md:p-8"
+                          className="absolute inset-0 w-full h-full object-contain"
                         />
                         {galleryImages.length > 1 && (
                           <>
