@@ -104,29 +104,29 @@ export function ProductCard({ product, theme = "light" }: { product: ProductWith
       {isMounted && createPortal(
         <AnimatePresence>
           {isQuickViewOpen && (
-            <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                onClick={() => setIsQuickViewOpen(false)}
-                className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-              />
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                className={`relative w-full max-w-3xl rounded-2xl shadow-2xl flex flex-col md:flex-row max-h-[90vh] md:max-h-[80vh] overflow-y-auto md:overflow-hidden bg-white dark:bg-zinc-900`}
-              >
-                <button
-                  onClick={() => setIsQuickViewOpen(false)}
-                  className={`absolute top-4 right-4 z-10 p-2 rounded-full bg-white/80 dark:bg-zinc-800/80 text-gray-500 dark:text-zinc-400 hover:text-gray-900 dark:hover:text-white shadow-sm backdrop-blur-md`}
-                >
-                  <X size={20} />
-                </button>
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    onClick={() => setIsQuickViewOpen(false)}
+                    className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+                  />
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                    className={`relative w-full max-w-4xl rounded-2xl shadow-2xl flex flex-col md:flex-row max-h-[90vh] md:max-h-[85vh] overflow-y-auto md:overflow-hidden bg-white dark:bg-zinc-900`}
+                  >
+                    <button
+                      onClick={() => setIsQuickViewOpen(false)}
+                      className={`absolute top-4 right-4 z-10 p-2 rounded-full bg-white/80 dark:bg-zinc-800/80 text-gray-500 dark:text-zinc-400 hover:text-gray-900 dark:hover:text-white shadow-sm backdrop-blur-md`}
+                    >
+                      <X size={20} />
+                    </button>
 
-                <div className={`w-full md:w-1/2 flex flex-col shrink-0 bg-gray-100 dark:bg-zinc-800`}>
-                  <div className="w-full flex-1 relative group min-h-[300px] md:min-h-[400px]">
+                    <div className={`w-full md:w-1/2 flex flex-col shrink-0 bg-gray-100 dark:bg-zinc-800`}>
+                      <div className="w-full flex-1 relative group min-h-[350px] md:min-h-[500px]">
                     {currentImage ? (
                       <>
                         <img
