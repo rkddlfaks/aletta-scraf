@@ -6,10 +6,11 @@ import Link from "next/link";
 export default async function CatalogPage({
   searchParams,
 }: {
-  searchParams: { category?: string; sort?: string };
+  searchParams: Promise<{ category?: string; sort?: string }>;
 }) {
-  const category = searchParams.category || "Semua";
-  const sort = searchParams.sort || "newest";
+  const resolvedSearchParams = await searchParams;
+  const category = resolvedSearchParams.category || "Semua";
+  const sort = resolvedSearchParams.sort || "newest";
 
   // Build query: Exclude Mukena Premium from this page
   const baseWhere = { is_active: true, category: { not: "Mukena Premium" } };

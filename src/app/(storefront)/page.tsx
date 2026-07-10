@@ -8,7 +8,7 @@ import { TopPromoTicker } from "@/components/storefront/TopPromoTicker";
 export default async function HomePage() {
   const setting = await prisma.storeSetting.findFirst();
   const featuredProducts = await prisma.product.findMany({
-    where: { is_active: true },
+    where: { is_active: true, category: { not: "Mukena Premium" } },
     take: 4,
     orderBy: { created_at: 'desc' },
     include: { images: true }
@@ -61,12 +61,7 @@ export default async function HomePage() {
         <div className="container mx-auto px-4 relative z-10">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-8 items-center">
             <div className="max-w-2xl pt-10 lg:pt-0">
-              <FadeUp delay={0.1}>
-                <span className="inline-block px-4 py-1.5 bg-white/60 backdrop-blur-sm text-pink-800 text-sm font-semibold rounded-full mb-6 shadow-sm border border-pink-100">
-                  ✨ #SahabatCoassMuslimah
-                </span>
-              </FadeUp>
-              
+
               <FadeUp delay={0.3}>
                 <h1 className="text-5xl md:text-7xl font-serif font-bold text-pink-900 leading-tight mb-6">
                   Hijab Medis Premium untuk Kenyamanan Anda
@@ -81,7 +76,7 @@ export default async function HomePage() {
               
               <FadeUp delay={0.7}>
                 <div className="flex flex-wrap gap-4">
-                  <Link href="/produk" className="bg-pink-700 hover:bg-pink-800 text-white px-8 py-4 rounded-full font-bold transition-all shadow-lg hover:shadow-pink-700/30 hover:-translate-y-1 flex items-center gap-2 text-lg">
+                  <Link href="#koleksi" className="bg-pink-700 hover:bg-pink-800 text-white px-8 py-4 rounded-full font-bold transition-all shadow-lg hover:shadow-pink-700/30 hover:-translate-y-1 flex items-center gap-2 text-lg">
                     Lihat Koleksi <ArrowRight size={20} />
                   </Link>
                 </div>
@@ -89,11 +84,21 @@ export default async function HomePage() {
             </div>
 
             <FadeIn delay={0.9} className="relative w-full h-[500px] lg:h-[650px] flex items-end justify-center">
-              <img 
-                src="/hero-medis.png" 
-                alt="Dokter mengenakan Hijab Medis Aletta Scarf" 
-                className="w-full h-full object-contain object-bottom mix-blend-multiply"
-              />
+              {featuredProducts.length > 0 && featuredProducts[0].images.length > 0 ? (
+                <div className="w-full h-full relative">
+                  <img 
+                    src={featuredProducts[0].images[0].url} 
+                    alt="Model Scarf"
+                    className="w-full h-full object-contain object-bottom mix-blend-multiply [mask-image:linear-gradient(to_top,rgba(0,0,0,1)_30%,rgba(0,0,0,0)_100%)] md:[mask-image:radial-gradient(circle_at_center,rgba(0,0,0,1)_40%,rgba(0,0,0,0)_80%)] opacity-95"
+                  />
+                </div>
+              ) : (
+                <img 
+                  src="/hero-medis.png" 
+                  alt="Dokter mengenakan Hijab Medis Aletta Scarf" 
+                  className="w-full h-full object-contain object-bottom mix-blend-multiply [mask-image:linear-gradient(to_top,rgba(0,0,0,1)_30%,rgba(0,0,0,0)_100%)] md:[mask-image:radial-gradient(circle_at_center,rgba(0,0,0,1)_45%,rgba(0,0,0,0)_75%)] opacity-95"
+                />
+              )}
             </FadeIn>
           </div>
         </div>
@@ -106,6 +111,35 @@ export default async function HomePage() {
 
       {/* Promo Ticker */}
       <TopPromoTicker setting={setting} />
+
+      {/* Featured Products */}
+      <section id="koleksi" className="py-24 bg-gray-50/50">
+        <div className="container mx-auto px-4">
+          <FadeUp className="text-center max-w-2xl mx-auto mb-16">
+            <span className="inline-block text-pink-600 font-bold tracking-wider text-sm uppercase mb-4 bg-pink-100/50 px-5 py-2 rounded-full border border-pink-100">
+              Spesial Untuk Anda
+            </span>
+            <h2 className="text-4xl md:text-5xl font-serif font-bold text-gray-900 mb-6">Koleksi Terbaru</h2>
+            <p className="text-gray-600 text-lg">Temukan inovasi hijab medis dan aksesoris terbaru yang dirancang khusus untuk kenyamanan para profesional.</p>
+          </FadeUp>
+          
+          <div className="flex overflow-x-auto pb-12 -mx-4 px-[calc(50vw-140px)] sm:px-[calc(50vw-150px)] snap-x snap-mandatory gap-6 lg:grid lg:grid-cols-4 lg:overflow-visible lg:pb-0 lg:mx-0 lg:px-0 lg:gap-6 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']">
+            {featuredProducts.map((product, index) => (
+              <FadeUp key={product.id} delay={0.1 * (index + 1)} className="w-[280px] sm:w-[300px] lg:w-auto snap-center shrink-0 h-full flex">
+                <div className="w-full h-full flex flex-col">
+                  <ProductCard product={product} />
+                </div>
+              </FadeUp>
+            ))}
+          </div>
+          
+          <FadeUp delay={0.5} className="mt-10 md:mt-16 text-center">
+            <Link href="/produk" className="inline-flex items-center justify-center gap-2 text-pink-700 hover:text-white font-bold bg-white hover:bg-pink-700 px-8 py-4 rounded-full transition-all shadow-sm border border-pink-100 hover:shadow-lg">
+              Lihat Semua Koleksi <ArrowRight size={20} />
+            </Link>
+          </FadeUp>
+        </div>
+      </section>
 
       {/* FAQ Section */}
       <section className="py-20 md:py-32 bg-gray-50 border-t border-gray-200">
@@ -248,34 +282,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Featured Products */}
-      <section className="py-24 bg-gray-50/50">
-        <div className="container mx-auto px-4">
-          <FadeUp className="text-center max-w-2xl mx-auto mb-16">
-            <span className="inline-block text-pink-600 font-bold tracking-wider text-sm uppercase mb-4 bg-pink-100/50 px-5 py-2 rounded-full border border-pink-100">
-              Spesial Untuk Anda
-            </span>
-            <h2 className="text-4xl md:text-5xl font-serif font-bold text-gray-900 mb-6">Koleksi Terbaru</h2>
-            <p className="text-gray-600 text-lg">Temukan inovasi hijab medis dan aksesoris terbaru yang dirancang khusus untuk kenyamanan para profesional.</p>
-          </FadeUp>
-          
-          <div className="flex overflow-x-auto pb-12 -mx-4 px-[calc(50vw-140px)] sm:px-[calc(50vw-150px)] snap-x snap-mandatory gap-6 lg:grid lg:grid-cols-4 lg:overflow-visible lg:pb-0 lg:mx-0 lg:px-0 lg:gap-6 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']">
-            {featuredProducts.map((product, index) => (
-              <FadeUp key={product.id} delay={0.1 * (index + 1)} className="w-[280px] sm:w-[300px] lg:w-auto snap-center shrink-0 h-full flex">
-                <div className="w-full h-full flex flex-col">
-                  <ProductCard product={product} />
-                </div>
-              </FadeUp>
-            ))}
-          </div>
-          
-          <FadeUp delay={0.5} className="mt-10 md:mt-16 text-center">
-            <Link href="/produk" className="inline-flex items-center justify-center gap-2 text-pink-700 hover:text-white font-bold bg-white hover:bg-pink-700 px-8 py-4 rounded-full transition-all shadow-sm border border-pink-100 hover:shadow-lg">
-              Lihat Semua Koleksi <ArrowRight size={20} />
-            </Link>
-          </FadeUp>
-        </div>
-      </section>
+
     </div>
   );
 }

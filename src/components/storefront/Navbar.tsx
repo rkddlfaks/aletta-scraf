@@ -50,15 +50,11 @@ export function Navbar() {
             </Link>
           </div>
           
-          {/* Desktop Nav */}
-          <nav className="hidden md:flex items-center gap-12">
-            <NavLink href="/" isDark={isDark}>Beranda</NavLink>
-            <NavLink href="/produk" isDark={isDark}>Koleksi Scarf</NavLink>
-            <NavLink href="/mukena" isDark={isDark}>Koleksi Mukena</NavLink>
-            <NavLink href="/lacak-pesanan" isDark={isDark}>Lacak Pesanan</NavLink>
-          </nav>
-
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-4 md:gap-8">
+            {/* Desktop Nav */}
+            <nav className="hidden md:flex items-center">
+              <NavLink href="/" isDark={isDark}>Beranda</NavLink>
+            </nav>
             <button 
               onClick={() => useCartStore.getState().toggleCart()} 
               className={`relative p-2 transition-colors group outline-none ${isDark ? 'text-amber-500 hover:text-amber-400' : 'text-pink-900 hover:text-pink-700'}`}
@@ -115,34 +111,13 @@ export function Navbar() {
               isDark ? 'bg-zinc-900/95 border-zinc-700 shadow-xl' : 'bg-white/95 border-white/60 shadow-[0_8px_32px_rgba(0,0,0,0.08),inset_0_1px_1px_rgba(255,255,255,0.8)]'
             }`}
           >
-            <div className="px-4 py-4 space-y-2">
+            <div className="flex flex-col gap-2">
               <Link 
                 href="/" 
                 className={`block px-4 py-3 rounded-xl text-base font-bold transition-colors outline-none [-webkit-tap-highlight-color:transparent] ${isDark ? 'text-amber-500 hover:text-amber-400 hover:bg-zinc-800' : 'text-pink-900 hover:text-pink-700 hover:bg-white/60'}`}
                 onClick={() => setIsMenuOpen(false)}
               >
                 Beranda
-              </Link>
-              <Link 
-                href="/produk" 
-                className={`block px-4 py-3 rounded-xl text-base font-bold transition-colors outline-none [-webkit-tap-highlight-color:transparent] ${isDark ? 'text-amber-500 hover:text-amber-400 hover:bg-zinc-800' : 'text-pink-900 hover:text-pink-700 hover:bg-white/60'}`}
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Koleksi Scarf
-              </Link>
-              <Link 
-                href="/mukena" 
-                className={`block px-4 py-3 rounded-xl text-base font-bold transition-colors outline-none [-webkit-tap-highlight-color:transparent] ${isDark ? 'text-amber-500 hover:text-amber-400 hover:bg-zinc-800' : 'text-pink-900 hover:text-pink-700 hover:bg-white/60'}`}
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Koleksi Mukena
-              </Link>
-              <Link 
-                href="/lacak-pesanan" 
-                className={`block px-4 py-3 rounded-xl text-base font-bold transition-colors outline-none [-webkit-tap-highlight-color:transparent] ${isDark ? 'text-amber-500 hover:text-amber-400 hover:bg-zinc-800' : 'text-pink-900 hover:text-pink-700 hover:bg-white/60'}`}
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Lacak Pesanan
               </Link>
             </div>
           </motion.div>

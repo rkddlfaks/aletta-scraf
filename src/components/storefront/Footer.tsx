@@ -27,7 +27,6 @@ export function Footer() {
             <ul className={`space-y-2 text-sm ${isDark ? 'text-amber-100/60' : 'text-pink-100/80'}`}>
               <li><Link href="/" className={`transition-colors ${isDark ? 'hover:text-amber-400' : 'hover:text-white'}`}>Beranda</Link></li>
               <li><Link href="/produk" className={`transition-colors ${isDark ? 'hover:text-amber-400' : 'hover:text-white'}`}>Koleksi Scarf</Link></li>
-              <li><Link href="/mukena" className={`transition-colors ${isDark ? 'hover:text-amber-400' : 'hover:text-white'}`}>Koleksi Mukena</Link></li>
             </ul>
           </div>
           
