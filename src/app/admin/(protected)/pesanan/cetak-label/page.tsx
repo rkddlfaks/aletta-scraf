@@ -103,7 +103,7 @@ export default async function CetakLabelPage({
               <ul className="text-[10px] space-y-1">
                 {order.items.map(item => (
                   <li key={item.id} className="flex justify-between">
-                    <span className="truncate pr-2">{item.product.name}</span>
+                    <span className="truncate pr-2">{item.product?.name || 'Produk Dihapus'}</span>
                     <span className="font-bold whitespace-nowrap">{item.quantity}x</span>
                   </li>
                 ))}

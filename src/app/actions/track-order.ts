@@ -43,7 +43,7 @@ export async function trackOrder(orderNumber: string, phone: string) {
         payment_proof: order.payment_proof,
         has_testimonial: !!order.testimonial,
         items: order.items.map(item => ({
-          name: item.product.name,
+          name: item.product?.name || 'Produk Dihapus',
           quantity: item.quantity
         }))
       }

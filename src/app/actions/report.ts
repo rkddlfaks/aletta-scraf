@@ -77,7 +77,7 @@ export async function exportOrdersCSV(params: { q: string; status: string; date:
       const totalCost = order.items.reduce((sum, item) => sum + (item.cost * item.quantity), 0);
       
       // Combine items into a single string for the CSV cell
-      const itemsDetail = order.items.map(i => `${i.quantity}x ${i.product.name.replace(/,/g, '')}`).join(" | ");
+      const itemsDetail = order.items.map(i => `${i.quantity}x ${i.product?.name ? i.product.name.replace(/,/g, '') : 'Produk Dihapus'}`).join(" | ");
 
       // Escape quotes and wrap strings in quotes if they contain commas
       const row = [
