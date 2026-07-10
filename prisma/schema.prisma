@@ -6,8 +6,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model User {
@@ -90,14 +91,14 @@ model Testimonial {
 model OrderItem {
   id         Int      @id @default(autoincrement())
   order_id   Int
-  product_id Int
+  product_id Int?
   
   quantity   Int
   price      Int      // Snapshot of price at the time of purchase
   cost       Int      @default(0) // Snapshot of cost at the time of purchase
 
   order      Order    @relation(fields: [order_id], references: [id], onDelete: Cascade)
-  product    Product  @relation(fields: [product_id], references: [id], onDelete: Restrict)
+  product    Product? @relation(fields: [product_id], references: [id], onDelete: SetNull)
 }
 
 model ProductImage {
