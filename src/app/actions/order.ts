@@ -52,13 +52,15 @@ export async function updateOrderStatus(
     // Deduct stock if payment is confirmed
     if (isPaying) {
       for (const item of currentOrder.items) {
-        await prisma.product.update({
-          where: { id: item.product_id },
-          data: {
-            current_stock: { decrement: item.quantity },
-            sold_count: { increment: item.quantity }
-          }
-        });
+        if (item.product_id) {
+          await prisma.product.update({
+            where: { id: item.product_id },
+            data: {
+              current_stock: { decrement: item.quantity },
+              sold_count: { increment: item.quantity }
+            }
+          });
+        }
       }
     }
 

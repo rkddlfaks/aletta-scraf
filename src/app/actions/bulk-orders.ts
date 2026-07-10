@@ -37,13 +37,15 @@ export async function updateBulkOrderStatuses(orderIds: number[], newStatus: str
 
       if (isPaying) {
         for (const item of order.items) {
-          await prisma.product.update({
-            where: { id: item.product_id },
-            data: {
-              current_stock: { decrement: item.quantity },
-              sold_count: { increment: item.quantity }
-            }
-          });
+          if (item.product_id) {
+            await prisma.product.update({
+              where: { id: item.product_id },
+              data: {
+                current_stock: { decrement: item.quantity },
+                sold_count: { increment: item.quantity }
+              }
+            });
+          }
         }
       }
     }
