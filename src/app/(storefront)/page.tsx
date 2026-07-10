@@ -64,13 +64,13 @@ export default async function HomePage() {
 
               <FadeUp delay={0.3}>
                 <h1 className="text-5xl md:text-7xl font-serif font-bold text-pink-900 leading-tight mb-6">
-                  Hijab Medis Premium untuk Kenyamanan Anda
+                  Hijab Stetoskop Premium
                 </h1>
               </FadeUp>
               
               <FadeUp delay={0.5}>
                 <p className="text-lg md:text-xl text-gray-700 mb-8 max-w-xl leading-relaxed">
-                  Inovasi lubang telinga yang dirancang khusus agar pemakaian stetoskop menjadi lebih mudah, rapi, dan cepat tanpa perlu melepas kerudung.
+                  Inovasi lubang telinga yang dirancang khusus agar pemakaian stetoskop menjadi lebih mudah, rapi, dan cepat tanpa perlu melepas hijab.
                 </p>
               </FadeUp>
               
@@ -146,7 +146,7 @@ export default async function HomePage() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <FadeUp>
             <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-5xl font-serif font-bold text-gray-900 mb-6">Pertanyaan Seputar Aletta</h2>
+              <h2 className="text-3xl md:text-5xl font-serif font-bold text-gray-900 mb-6">Pertanyaan seputar aletta scraf</h2>
               <p className="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">Jawaban cepat untuk keraguan Anda sebelum berbelanja.</p>
             </div>
           </FadeUp>
@@ -167,7 +167,7 @@ export default async function HomePage() {
               },
               {
                 q: "Apakah bisa bayar di tempat (COD)?",
-                a: "Saat ini kami menerima pembayaran via Transfer Bank (BCA, Mandiri) dan e-Wallet (GoPay, OVO). Untuk COD sedang dalam tahap pengembangan sistem kami."
+                a: "Saat ini kami menerima pembayaran via Transfer Bank (BCA, Mandiri) dan e-Wallet (GoPay, OVO). Untuk COD tidak bisa ya kak."
               }
             ].map((faq, i) => (
               <StaggerItem key={i}>
